@@ -20,27 +20,69 @@ export default function DownloadModel(props: Props) {
     />
 }
 
+interface ModelElement {
+    from: number[]
+    to: number[]
+    faces: {
+        [x: string]: {
+            uv: number[]
+            texture: string
+        }
+    }
+}
+
 function edgesToModel(edges: DrawEdge[]) {
-    return edges.map(edge => {
-        return {
-            from: [edge.start.x, edge.start.y, 0],
-            to: [edge.end.x, edge.end.y, 1],
+    const depthInner = 0.5
+    //const depthOuter = 1
+
+    let model: ModelElement[] = [
+        {
+            from: [0, 0, 8 + depthInner / 2],
+            to: [16, 16, 8 + depthInner / 2],
             faces: {
-                [normalToFace(edge.normalFacing)]: {
-                    uv: [edge.start.x, 16-edge.start.y, edge.end.x, 16-edge.end.y],
+                south: {
+                    uv: [0, 0, 16, 16],
+                    texture: '#pick'
+                }
+            }
+        },
+        {
+            from: [0, 0, 8 - depthInner / 2],
+            to: [16, 16, 8 - depthInner / 2],
+            faces: {
+                north: {
+                    uv: [16, 0, 0, 16],
                     texture: '#pick'
                 }
             }
         }
-    })
+    ]
+
+    let inners = edges.map(edge => ({
+        from: [edge.start.x, edge.start.y, 8 - depthInner / 2],
+        to: [edge.end.x, edge.end.y, 8 + depthInner / 2],
+        faces: {
+            [normalToFace(edge.normalFacing)]: {
+                uv: [edge.start.x,
+                    16 - edge.start.y,
+                    edge.end.x - edge.normalFacing.x / 2,
+                    16 - edge.end.y + edge.normalFacing.y / 2
+                ],
+                texture: '#pick'
+            }
+        }
+    }))
+    model = model.concat(inners)
+
+    return model
 }
 
 function normalToFace(normal: Facing): string {
     console.log(normal)
-    if(normal.x === 1) return 'west'
+    if(normal.x === 1) return 'east'
     if(normal.x === -1) return 'east'
     if(normal.y === 1) return 'down'
-    if(normal.y === -1) return 'up'
+    if(normal.y === -1) return 'down'
     throw Error('No face to show')
 }
 
