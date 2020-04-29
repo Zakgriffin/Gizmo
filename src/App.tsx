@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import PixelEditor from './components/PixelEditor'
 import ImageUploader from './components/ImageUploader'
 import DownloadModel from './components/DownloadModel'
-import { getEdges, Color, toDrawEdge, DrawEdge } from './PixelLogic'
+import { getEdges, toDrawEdge } from './PixelLogic'
+import { Color, EdgesPair } from './PixelLogicInterfaces'
 
 let initData = [...Array(32)].map(() => Array<Color>(32))
 function f(x: number, y: number) {
@@ -27,12 +28,22 @@ f(4, 6)
 f(3, 3)
 f(3, 3)
 
+const plainInit = getEdges(initData)
+const initEdges = {
+    plain: plainInit,
+    toDraw: plainInit.map(e => toDrawEdge(e))
+}
+
 export default function App() {
     let [imageData, setImageData] = useState<Color[][]>(initData)
-    let [edges, setEdges] = useState<DrawEdge[]>([])
+    let [edgesPair, setEdgesPair] = useState<EdgesPair>(initEdges)
 
     useEffect(() => {
-        setEdges(getEdges(imageData).map(e => toDrawEdge(e)))
+        let plain = getEdges(imageData)
+        setEdgesPair({
+            plain,
+            toDraw: plain.map(e => toDrawEdge(e))
+        })
     }, [imageData])
 
     const getImageDataCopy = () => {
@@ -46,8 +57,8 @@ export default function App() {
     }
 
     return <>
-        <PixelEditor imageData={imageData} toggleDepth={toggleDepth} edges={edges} setEdges={setEdges}/>
+        <PixelEditor setImageData={setImageData} imageData={imageData} toggleDepth={toggleDepth} edgesPair={edgesPair}/>
         <ImageUploader setImageData={setImageData}/>
-        <DownloadModel imageData={imageData} edges={edges}/>
+        <DownloadModel imageData={imageData} edgesPair={edgesPair}/>
     </>
 }

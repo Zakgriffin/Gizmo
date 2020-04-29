@@ -1,9 +1,9 @@
 import React from 'react'
-import { Color, Facing, DrawEdge } from '../PixelLogic'
+import { Color, Facing, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
 
 interface Props {
     imageData: Color[][]
-    edges: DrawEdge[]
+    edgesPair: EdgesPair
 }
 
 export default function DownloadModel(props: Props) {
@@ -13,7 +13,7 @@ export default function DownloadModel(props: Props) {
                 textures: {
                     pick: 'item/pick'
                 },
-                elements: edgesToModel(props.edges)
+                elements: edgesToModel(props.edgesPair.toDraw)
             }
             downloadFile('model', model)
         }}
@@ -63,7 +63,8 @@ function edgesToModel(edges: DrawEdge[]) {
         to: [edge.end.x, edge.end.y, 8 + depthInner / 2],
         faces: {
             [normalToFace(edge.normalFacing)]: {
-                uv: [edge.start.x,
+                uv: [
+                    edge.start.x,
                     16 - edge.start.y,
                     edge.end.x - edge.normalFacing.x / 2,
                     16 - edge.end.y + edge.normalFacing.y / 2

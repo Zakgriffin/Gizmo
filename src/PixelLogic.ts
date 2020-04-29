@@ -1,28 +1,4 @@
-export interface Color {
-    red: number
-    green: number
-    blue: number
-    alpha: number
-    depth?: boolean
-}
-
-interface Point {
-    x: number
-    y: number
-}
-
-export interface Facing {
-    x: number
-    y: number
-}
-
-export interface Edge {
-    start: Point
-    end: Point
-    normalFacing: Facing
-    moving: Facing
-    type: string
-}
+import { Facing, Point, Color, Edge, DrawEdge } from "./PixelLogicInterfaces"
 
 export function getEdges(data: Color[][]) {
     let startIndex = findStartIndex(data)
@@ -102,17 +78,11 @@ function isValid(c: Color) {
     return c && (c.alpha) > 0
 }
 
-export interface DrawEdge {
-    start: Point
-    end: Point
-    normalFacing: Facing
-}
-
 export function toDrawEdge(edge: Edge) {
     let newEdge: DrawEdge = {
-        start: edge.start,
-        end: edge.end,
-        normalFacing: edge.normalFacing
+        start: {...edge.start},
+        end: {...edge.end},
+        normalFacing: {...edge.normalFacing}
     }
 
     if((edge.normalFacing.y === 1 && edge.moving.x === -1) || edge.normalFacing.x === 1) {
@@ -128,10 +98,37 @@ export function toDrawEdge(edge: Edge) {
         newEdge.end.x += 1
     }
 
-    newEdge.start.x /= 2
-    newEdge.start.y /= 2
-    newEdge.end.x /= 2
-    newEdge.end.y /= 2
+    // newEdge.start.x /= 2
+    // newEdge.start.y /= 2
+    // newEdge.end.x /= 2
+    // newEdge.end.y /= 2
     
     return newEdge
+}
+
+export function getTrimmedData(data: Color[][], edges: Edge[]) {
+    let clonedData: Color[][] = JSON.parse(JSON.stringify(data))
+    console.log('HEY')
+    edges.forEach(edge => {
+        forAllWithin(edge, (x, y) => {
+            clonedData[x][y] = {
+                red: 0, green: 0, blue: 0, alpha: 0
+            }
+        })
+    })
+
+    return clonedData
+}
+
+function forAllWithin(edge: Edge, callback: (x: number, y: number) => void) {
+    let minX = Math.min(edge.start.x, edge.end.x)
+    let maxX = Math.max(edge.start.x, edge.end.x)
+    let minY = Math.min(edge.start.y, edge.end.y)
+    let maxY = Math.max(edge.start.y, edge.end.y)
+
+    for(let x = minX; x <= maxX; x++) {
+        for(let y = minY; y <= maxY; y++) {
+            callback(x, y)
+        }
+    }
 }

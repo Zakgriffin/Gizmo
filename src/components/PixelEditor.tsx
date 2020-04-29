@@ -1,16 +1,17 @@
 import React from 'react'
 import { toPolyLine } from '../functions'
-import { Color, DrawEdge } from '../PixelLogic'
+import { Color, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
+import { getTrimmedData } from '../PixelLogic'
 
 interface Props {
     imageData: Color[][]
+    setImageData: (newData: Color[][]) => void
     toggleDepth: (x: number, y: number) => void
-    edges: DrawEdge[]
-    setEdges: (edges: DrawEdge[]) => void
+    edgesPair: EdgesPair
 }
 
 export default function PixelEditor(props: Props) {
-    const edgesToDraw = props.edges
+    const edgesToDraw = props.edgesPair.toDraw
 
     const pixelSize = 32
     
@@ -78,17 +79,6 @@ export default function PixelEditor(props: Props) {
         </>
     }
 
-    // const pixels = () => {
-    //     if(!props.imageData[0][0]) return
-    //     let res = []
-    //     for(let x = props.imageData.length - 1; x >= 0; x--) {
-    //         for(let y = props.imageData[0].length - 1; y >= 0; y--) {
-    //             res.push(drawPixel(props.imageData[x][y], x, y))
-    //         }
-    //     }
-    //     return res
-    // }
-
     return <svg viewBox='0 0 100 100' width='600px'>
         <rect width='100' height='100' fill='none' stroke='black'/>
         {
@@ -100,6 +90,12 @@ export default function PixelEditor(props: Props) {
         {
             edgesToDraw.map((edge, i) => <VisualEdge key={i} edge={edge}/>)
         }
+        <circle r='10'
+            onClick={() => {
+                const newData = getTrimmedData(props.imageData, props.edgesPair.plain)
+                props.setImageData(newData)
+            }}
+        />
     </svg>
 }
 
