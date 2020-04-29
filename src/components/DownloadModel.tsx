@@ -1,5 +1,6 @@
 import React from 'react'
 import { Color, Facing, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
+import { getTrimmedData, toDrawEdge, getEdges } from '../PixelLogic'
 
 interface Props {
     imageData: Color[][]
@@ -9,11 +10,16 @@ interface Props {
 export default function DownloadModel(props: Props) {
     return <button style={{width: 100}}
         onClick={() => {
+            let trimmed = getTrimmedData(props.imageData, props.edgesPair.plain)
+            let inner = getEdges(trimmed).map(e => toDrawEdge(e))
             let model = {
                 textures: {
                     pick: 'item/pick'
                 },
-                elements: edgesToModel(props.edgesPair.toDraw)
+                elements: [
+                    ...edgesToModel(inner, 1),
+                    ...edgesToModel(props.edgesPair.toDraw, 0.5)
+                ]
             }
             downloadFile('model', model)
         }}
@@ -24,21 +30,18 @@ interface ModelElement {
     from: number[]
     to: number[]
     faces: {
-        [x: string]: {
+        [face: string]: {
             uv: number[]
             texture: string
         }
     }
 }
 
-function edgesToModel(edges: DrawEdge[]) {
-    const depthInner = 0.5
-    //const depthOuter = 1
-
+function edgesToModel(edges: DrawEdge[], depth: number) {
     let model: ModelElement[] = [
         {
-            from: [0, 0, 8 + depthInner / 2],
-            to: [16, 16, 8 + depthInner / 2],
+            from: [0, 0, 8 + depth / 2],
+            to: [16, 16, 8 + depth / 2],
             faces: {
                 south: {
                     uv: [0, 0, 16, 16],
@@ -47,8 +50,8 @@ function edgesToModel(edges: DrawEdge[]) {
             }
         },
         {
-            from: [0, 0, 8 - depthInner / 2],
-            to: [16, 16, 8 - depthInner / 2],
+            from: [0, 0, 8 - depth / 2],
+            to: [16, 16, 8 - depth / 2],
             faces: {
                 north: {
                     uv: [16, 0, 0, 16],
@@ -59,8 +62,8 @@ function edgesToModel(edges: DrawEdge[]) {
     ]
 
     let inners = edges.map(edge => ({
-        from: [edge.start.x, edge.start.y, 8 - depthInner / 2],
-        to: [edge.end.x, edge.end.y, 8 + depthInner / 2],
+        from: [edge.start.x, edge.start.y, 8 - depth / 2],
+        to: [edge.end.x, edge.end.y, 8 + depth / 2],
         faces: {
             [normalToFace(edge.normalFacing)]: {
                 uv: [

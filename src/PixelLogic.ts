@@ -98,17 +98,16 @@ export function toDrawEdge(edge: Edge) {
         newEdge.end.x += 1
     }
 
-    // newEdge.start.x /= 2
-    // newEdge.start.y /= 2
-    // newEdge.end.x /= 2
-    // newEdge.end.y /= 2
+    newEdge.start.x /= 2
+    newEdge.start.y /= 2
+    newEdge.end.x /= 2
+    newEdge.end.y /= 2
     
     return newEdge
 }
 
 export function getTrimmedData(data: Color[][], edges: Edge[]) {
     let clonedData: Color[][] = JSON.parse(JSON.stringify(data))
-    console.log('HEY')
     edges.forEach(edge => {
         forAllWithin(edge, (x, y) => {
             clonedData[x][y] = {
