@@ -107,7 +107,7 @@ export function toDrawEdge(edge: Edge) {
 }
 
 export function getTrimmedData(data: Color[][], edges: Edge[]) {
-    let clonedData: Color[][] = JSON.parse(JSON.stringify(data))
+    let clonedData: Color[][] = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
     edges.forEach(edge => {
         forAllWithin(edge, (x, y) => {
             clonedData[x][y] = {
@@ -125,9 +125,87 @@ function forAllWithin(edge: Edge, callback: (x: number, y: number) => void) {
     let minY = Math.min(edge.start.y, edge.end.y)
     let maxY = Math.max(edge.start.y, edge.end.y)
 
+    // for(let x = minX; x <= maxX; x++) {
+    //     for(let y = minY; y <= maxY; y++) {
+    //         callback(x, y)
+    //     }
+    // }
+    forInBounds(minX, maxX, minY, maxY, callback)
+}
+
+interface ErodeOptions {
+    areaOfInfluence?: number
+    percentToRemain?: number
+    carryEdgeColor?: boolean
+    randomSurviveChance?: number
+    circular?: boolean
+}
+export function erode(data: Color[][], options?: ErodeOptions) {
+    let areaOfInfluence = options?.areaOfInfluence ?? 3
+    let percentToRemain = options?.percentToRemain ?? 1
+    let carryEdgeColor = options?.carryEdgeColor ?? false
+    let randomSurviveChance = options?.randomSurviveChance ?? 0
+    let circular = options?.circular ?? false
+
+    let newData: Color[][] = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
+
+    let influenceMask: number[][] = []
+
+    let halfInfluence = Math.ceil((areaOfInfluence - 1) / 2)
+    forInSquareBounds(-halfInfluence, halfInfluence, (xi, yi) => {
+        if(!circular || Math.sqrt(Math.pow(xi, 2) + Math.pow(yi, 2)) <= halfInfluence) {
+            influenceMask.push([xi, yi])
+        }
+    })
+    let neededSurround = influenceMask.length * percentToRemain
+
+    forInSquareBounds(0, data.length - 1, (x, y) => {
+        // loop each pixel in data
+        if(!isValid(data[x][y])) return // no reason to erode already empty pixel
+
+        let totalSurround = 0
+        for(let [xi, yi] of influenceMask) {
+            // test if pixel will be eroded with influenceMask
+            let xSearch = x + xi, ySearch = y + yi
+            if(withinRange(xSearch, ySearch) && isValid(data[xSearch][ySearch])) {
+                totalSurround++
+            }
+        }
+
+        if(totalSurround < neededSurround && Math.random() > randomSurviveChance) {
+            //pixel eroded
+            if(carryEdgeColor) {
+                // for(let [xi, yi] of influenceMask) {
+                //     let xSearch = x + xi, ySearch = y + yi
+                //     if(withinRange(xSearch, ySearch) && isValid(newData[xSearch][ySearch])) {
+                //         newData[xSearch][ySearch] = {...data[x][y]}
+                //     }
+                // }
+            }
+
+            newData[x][y] = {
+                red: 0, green: 0, blue: 0, alpha: 0
+            }
+        }
+    })
+
+    return newData
+}
+
+type PointCallback = (x: number, y: number) => void
+
+function forInSquareBounds(min: number, max: number, callback: PointCallback) {
+    forInBounds(min, max, min, max, callback)
+}
+
+function forInBounds(minX: number, maxX: number, minY: number, maxY: number, callback: PointCallback) {
     for(let x = minX; x <= maxX; x++) {
         for(let y = minY; y <= maxY; y++) {
             callback(x, y)
         }
     }
+}
+
+function withinRange(x: number, y: number) {
+    return x >= 0 && x < 32 && y >= 0 && y < 32
 }

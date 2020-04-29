@@ -1,7 +1,7 @@
 import React from 'react'
 import { toPolyLine } from '../functions'
 import { Color, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
-import { getTrimmedData } from '../PixelLogic'
+import { erode } from '../PixelLogic'
 
 interface Props {
     imageData: Color[][]
@@ -92,7 +92,14 @@ export default function PixelEditor(props: Props) {
         }
         <circle r='10'
             onClick={() => {
-                const newData = getTrimmedData(props.imageData, props.edgesPair.plain)
+                //const newData = getTrimmedData(props.imageData, props.edgesPair.plain)
+                const newData = erode(props.imageData, {
+                    circular: true,
+                    areaOfInfluence: 3,
+                    carryEdgeColor: true,
+                    randomSurviveChance: 0,
+                    percentToRemain: 0.5
+                })
                 props.setImageData(newData)
             }}
         />

@@ -16,13 +16,13 @@ export default function ImageUploader(props: Props) {
         let ctx = canvas.getContext('2d')
     
         let img = new Image()
-        img.onload = function() {
+        img.onload = () => {
             if(!ctx) return
             ctx.drawImage(img, 0, 0)
             let data = ctx.getImageData(0, 0, 32, 32)
-            props.setImageData(canvasImageDataToRGBA(data))
-            
             URL.revokeObjectURL(img.src)
+
+            props.setImageData(canvasImageDataToRGBA(data))
         }
         img.src = URL.createObjectURL(file)
     }
