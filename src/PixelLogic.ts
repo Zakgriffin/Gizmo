@@ -194,7 +194,7 @@ export function erode(data: Color[][], options?: ErodeOptions) {
 
 type PointCallback = (x: number, y: number) => void
 
-function forInSquareBounds(min: number, max: number, callback: PointCallback) {
+export function forInSquareBounds(min: number, max: number, callback: PointCallback) {
     forInBounds(min, max, min, max, callback)
 }
 

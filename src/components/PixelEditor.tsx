@@ -96,9 +96,9 @@ export default function PixelEditor(props: Props) {
                 const newData = erode(props.imageData, {
                     circular: true,
                     areaOfInfluence: 3,
-                    carryEdgeColor: true,
-                    randomSurviveChance: 0,
-                    percentToRemain: 0.5
+                    carryEdgeColor: false,
+                    randomSurviveChance: 0.95,
+                    percentToRemain: 1
                 })
                 props.setImageData(newData)
             }}

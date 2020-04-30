@@ -1,6 +1,6 @@
 import React from 'react'
 import { Color, Facing, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
-import { getTrimmedData, toDrawEdge, getEdges } from '../PixelLogic'
+import { getTrimmedData, toDrawEdge, getEdges, forInSquareBounds } from '../PixelLogic'
 
 interface Props {
     imageData: Color[][]
@@ -8,22 +8,29 @@ interface Props {
 }
 
 export default function DownloadModel(props: Props) {
-    return <button style={{width: 100}}
-        onClick={() => {
-            let trimmed = getTrimmedData(props.imageData, props.edgesPair.plain)
-            let inner = getEdges(trimmed).map(e => toDrawEdge(e))
-            let model = {
-                textures: {
-                    pick: 'item/pick'
-                },
-                elements: [
-                    ...edgesToModel(inner, 1),
-                    ...edgesToModel(props.edgesPair.toDraw, 0.5)
-                ]
-            }
-            downloadFile('model', model)
-        }}
-    />
+    return <>
+        <button style={{width: 100}}
+            onClick={() => {
+                let trimmed = getTrimmedData(props.imageData, props.edgesPair.plain)
+                let inner = getEdges(trimmed).map(e => toDrawEdge(e))
+                let model = {
+                    textures: {
+                        pick: 'item/pick'
+                    },
+                    elements: [
+                        ...edgesToModel(inner, 1),
+                        ...edgesToModel(props.edgesPair.toDraw, 0.5)
+                    ]
+                }
+                downloadJSON('model', model)
+            }}
+        />
+        <button style={{width: 100}}
+            onClick={() => {
+                downloadPNG('ugh', props.imageData)
+            }}
+        />
+    </>
 }
 
 interface ModelElement {
@@ -90,11 +97,39 @@ function normalToFace(normal: Facing): string {
     throw Error('No face to show')
 }
 
-async function downloadFile(fileName: string, data: object) {
+function downloadJSON(fileName: string, data: object) {
     const json = JSON.stringify(data, null, 2)
     const blob = new Blob([json], {type: 'application/json'})
     const link = document.createElement('a')
-    link.href = await URL.createObjectURL(blob)
+    link.href = URL.createObjectURL(blob)
     link.download = fileName + '.json'
     link.click()
+}
+
+function downloadPNG(fileName: string, data: Color[][]) {
+    let size = data.length
+    let arr = new Uint8ClampedArray(size * size * 4)
+    forInSquareBounds(0, size - 1, (x, y) => {
+        let pixel = data[x][y]
+        let current = ((size - y - 1) * size + x) * 4
+        arr[current] = pixel.red
+        arr[current + 1] = pixel.green
+        arr[current + 2] = pixel.blue
+        arr[current + 3] = pixel.alpha
+    })
+    
+    let canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    let ctx = canvas.getContext('2d')
+    if(!ctx) return
+
+    let imgData = new ImageData(arr, size)
+    ctx.putImageData(imgData, 0, 0)
+    canvas.toBlob(blob => {
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = fileName + '.png'
+        link.click()
+    })
 }
