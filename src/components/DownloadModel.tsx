@@ -117,7 +117,7 @@ function downloadPNG(fileName: string, data: Color[][]) {
         arr[current + 2] = pixel.blue
         arr[current + 3] = pixel.alpha
     })
-    
+
     let canvas = document.createElement('canvas')
     canvas.width = size
     canvas.height = size
