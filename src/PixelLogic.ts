@@ -1,6 +1,6 @@
-import { Facing, Point, Color, Edge, DrawEdge } from "./PixelLogicInterfaces"
+import { Facing, Point, Color, Edge, DrawEdge, PixelImage } from "./PixelLogicInterfaces"
 
-export function getEdges(data: Color[][]) {
+export function getEdges(data: PixelImage) {
     let startIndex = findStartIndex(data)
     let moving: Facing = {x: 1, y: 0}
     let current: Point = {...startIndex}
@@ -50,7 +50,7 @@ export function getEdges(data: Color[][]) {
     return edges
 }
 
-function findStartIndex(data: Color[][]): Point {
+function findStartIndex(data: PixelImage): Point {
     for(let y = 0; y < 32; y++) {
         for(let x = 0; x < 32; x++) {
             if(isValid(data[x][y])) return {x, y}
@@ -59,7 +59,7 @@ function findStartIndex(data: Color[][]): Point {
     throw Error('no start index')
 }
 
-function getBlockingPos(data: Color[][], current: Point, moving: Facing, facing: Facing) {
+function getBlockingPos(data: PixelImage, current: Point, moving: Facing, facing: Facing) {
     let ahead: Point = {
         x: current.x + moving.x + facing.x,
         y: current.y + moving.y + facing.y
@@ -106,8 +106,8 @@ export function toDrawEdge(edge: Edge) {
     return newEdge
 }
 
-export function getTrimmedData(data: Color[][], edges: Edge[]) {
-    let clonedData: Color[][] = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
+export function getTrimmedData(data: PixelImage, edges: Edge[]) {
+    let clonedData: PixelImage = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
     edges.forEach(edge => {
         forAllWithin(edge, (x, y) => {
             clonedData[x][y] = {
@@ -140,14 +140,14 @@ interface ErodeOptions {
     randomSurviveChance?: number
     circular?: boolean
 }
-export function erode(data: Color[][], options?: ErodeOptions) {
+export function erode(data: PixelImage, options?: ErodeOptions) {
     let areaOfInfluence = options?.areaOfInfluence ?? 3
     let percentToRemain = options?.percentToRemain ?? 1
     let carryEdgeColor = options?.carryEdgeColor ?? false
     let randomSurviveChance = options?.randomSurviveChance ?? 0
     let circular = options?.circular ?? false
 
-    let newData: Color[][] = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
+    let newData: PixelImage = JSON.parse(JSON.stringify(data)) // TODO not this, this is balls slow
 
     let influenceMask: number[][] = []
 
@@ -210,8 +210,6 @@ function withinRange(x: number, y: number) {
     return x >= 0 && x < 32 && y >= 0 && y < 32
 }
 
-export type PixelImage = Color[][]
-
 export function blankPixelImage() {
     let image: PixelImage = [...Array(32)].map(() => Array<Color>(32))
     forInSquareBounds(0, 32 - 1, (x, y) => {
@@ -245,7 +243,7 @@ export function canvasImageDataToRGBA(imageData: ImageData) {
 }
 
 export function dataToImage(fileData: string) {
-    return new Promise((resolve: (image: Color[][]) => void, reject) => {
+    return new Promise((resolve: (image: PixelImage) => void, reject) => {
         let canvas = document.createElement('canvas')
         canvas.width = 32
         canvas.height = 32
@@ -267,23 +265,3 @@ export function dataToImage(fileData: string) {
         img.src = fileData
     })
 }
-
-export function b64toBlob(b64Data: string, contentType='', sliceSize=512) {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-  
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-  
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-  
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-  
-    const blob = new Blob(byteArrays, {type: contentType});
-    return blob;
-  }

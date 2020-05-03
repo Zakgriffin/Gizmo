@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import PixelDisplay from './PixelDisplay'
-import { PixelImage, blankPixelImage } from '../PixelLogic'
+import { blankPixelImage } from '../PixelLogic'
+import { PixelImage } from '../PixelLogicInterfaces'
 
-type Material = 'wooden' | 'stone' | 'iron' | 'golden' | 'diamond'
-type ToolType = 'axe' | 'pickaxe' | 'shovel' | 'hoe' | 'sword'
+export type Material = 'wooden' | 'stone' | 'iron' | 'golden' | 'diamond'
+export type ToolType = 'axe' | 'pickaxe' | 'shovel' | 'hoe' | 'sword'
 
-type ToolGridData = {
+export type ToolGridData = {
     [material in Material]: {
         [toolType in ToolType]: PixelImage
     }
 }
 
 const blank = blankPixelImage()
-const initTools: ToolGridData = {
+export const initTools: ToolGridData = {
     wooden: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
     stone: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
     iron: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
@@ -21,15 +22,11 @@ const initTools: ToolGridData = {
 }
 // TODO oh fuck no ^
 
-export default function ToolGrid() {
-    const [tools, setTools] = useState<ToolGridData>(initTools)
+interface ToolGridProps {
+    tools: ToolGridData
+}
 
-    const setTool = (material: Material, type: ToolType, image: PixelImage) => {
-        let newTools: ToolGridData = JSON.parse(JSON.stringify(tools)) // TODO not this, this is balls slow
-        newTools[material][type] = image
-        setTools(newTools)
-    }
-
+export default function ToolGrid({tools}: ToolGridProps) {
     return <>
         <table style={{width: 100}}>
         <tbody>

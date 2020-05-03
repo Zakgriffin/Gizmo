@@ -1,34 +1,43 @@
 import React from 'react'
 import JSZip from 'jszip'
 import {materials, toolTypes} from '../constants'
-import { canvasImageDataToRGBA, dataToImage, b64toBlob } from '../PixelLogic'
+import { dataToImage } from '../PixelLogic'
+import { PixelImage } from '../PixelLogicInterfaces'
+import { Material, ToolType } from './ToolGrid'
 
-export default function PackUpload() {
-    return <input
-        type='file'
-        onChange={loadZIP}
-    />
+interface PackUploadProps {
+    setTool: (material: Material, type: ToolType, image: PixelImage) => void
 }
 
-function loadZIP(e: React.ChangeEvent<HTMLInputElement>) {
-    if(!e.target.files) return
-    const file = e.target.files[0]
-    let fileName = file.name.split('.zip')[0]
+type UploadEvent = React.ChangeEvent<HTMLInputElement>
 
-    const itemPath = `${fileName}/assets/minecraft/textures/items`
+export default function PackUpload({setTool}: PackUploadProps) {
+    const handleFileUpload = async (e: UploadEvent) => {
+        if(!e.target.files) return
+        const file = e.target.files[0]
+        let fileName = file.name.split('.zip')[0]
+    
+        let zip = await JSZip.loadAsync(file)
 
-    let images = []
-    JSZip.loadAsync(file).then(zip => {
+        const itemPath = `${fileName}/assets/minecraft/textures/items`
+
         for(let material of materials) {
             for(let toolType of toolTypes) {
                 let textureFile = zip.files[`${itemPath}/${material}_${toolType}.png`]
                 if(!textureFile) continue
-                textureFile.async('base64').then(fileData => {
-                    dataToImage('data:image/png;base64,' + fileData).then(image => {
-                        
-                    })
-                })
+                let fileData = await textureFile.async('base64')
+                let image = await dataToImage('data:image/png;base64,' + fileData)
+                setTool(material as Material, toolType as ToolType, image)
             }
         }
-    })
+    }
+
+    return <input
+        type='file'
+        onChange={handleFileUpload}
+    />
+}
+
+function loadZIP(e: UploadEvent) {
+
 }

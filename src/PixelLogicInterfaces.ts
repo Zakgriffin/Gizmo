@@ -34,3 +34,5 @@ export interface EdgesPair {
     plain: Edge[]
     toDraw: DrawEdge[]
 }
+
+export type PixelImage = Color[][]
