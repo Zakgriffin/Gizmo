@@ -1,40 +1,38 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PixelDisplay from './PixelDisplay'
-import { blankPixelImage } from '../PixelLogic'
 import { PixelImage } from '../PixelLogicInterfaces'
-
-export type Material = 'wooden' | 'stone' | 'iron' | 'golden' | 'diamond'
-export type ToolType = 'axe' | 'pickaxe' | 'shovel' | 'hoe' | 'sword'
+import { Material, ToolType } from '../constants'
 
 export type ToolGridData = {
     [material in Material]: {
-        [toolType in ToolType]: PixelImage
+        [toolType in ToolType]: PixelImage | undefined
     }
 }
 
-const blank = blankPixelImage()
+//const blank = blankPixelImage()
 export const initTools: ToolGridData = {
-    wooden: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
-    stone: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
-    iron: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
-    golden: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
-    diamond: {axe: blank, pickaxe: blank, shovel: blank, hoe: blank, sword: blank},
+    wooden: {sword: undefined, pickaxe: undefined, shovel: undefined, axe: undefined, hoe: undefined},
+    stone: {sword: undefined, pickaxe: undefined, shovel: undefined, axe: undefined, hoe: undefined},
+    iron: {sword: undefined, pickaxe: undefined, shovel: undefined, axe: undefined, hoe: undefined},
+    golden: {sword: undefined, pickaxe: undefined, shovel: undefined, axe: undefined, hoe: undefined},
+    diamond: {sword: undefined, pickaxe: undefined, shovel: undefined, axe: undefined, hoe: undefined},
 }
 // TODO oh fuck no ^
 
 interface ToolGridProps {
     tools: ToolGridData
+    setCurrentTool: (image: PixelImage | undefined) => void
 }
 
-export default function ToolGrid({tools}: ToolGridProps) {
+export default function ToolGrid({tools, setCurrentTool}: ToolGridProps) {
     return <>
         <table style={{width: 100}}>
         <tbody>
-        {Object.values(tools).map((toolMaterial, r) =>
+        {Object.values(tools).map((toolMaterialRow, r) =>
             <tr key={r}>
-            {Object.values(toolMaterial).map((tool, c) =>
+            {Object.values(toolMaterialRow).map((tool, c) =>
                 <td key={c} style={{padding: 8}}>
-                    <ToolSpace imageData={tool}/>
+                    <ToolSpace imageData={tool} onClick={() => setCurrentTool(tool)}/>
                 </td>
             )}
             </tr>
@@ -44,9 +42,14 @@ export default function ToolGrid({tools}: ToolGridProps) {
     </>
 }
 
-function ToolSpace({imageData}: {imageData: PixelImage}) {
+interface ToolSpace {
+    imageData: PixelImage | undefined
+    onClick: () => void
+}
+
+function ToolSpace({imageData, onClick}: ToolSpace) {
     return <>
         {/* <div style={{width: 100, height: 100, backgroundColor: 'red'}}/> */}
-        <PixelDisplay imageData={imageData} style={{width: 50, height: 50}}/>
+        <PixelDisplay {...{imageData, onClick}} style={{width: 50, height: 50}}/>
     </>
 }

@@ -1,20 +1,18 @@
 import React, { useState } from 'react'
-import ToolGrid, { ToolGridData, initTools, Material, ToolType } from './components/ToolGrid'
+import ToolGrid, { ToolGridData, initTools} from './components/ToolGrid'
 import PackUpload from './components/PackUpload'
+import PixelDisplay from './components/PixelDisplay'
 import { PixelImage } from './PixelLogicInterfaces'
 
 export default function App() {
     const [tools, setTools] = useState<ToolGridData>(initTools)
-
-    const setTool = (material: Material, type: ToolType, image: PixelImage) => {
-        let newTools: ToolGridData = {...tools}
-        newTools[material] = {...newTools[material]}
-        newTools[material][type] = image
-        setTools(newTools)
-    }
+    const [currentTool, setCurrentTool] = useState<PixelImage>()
     
     return <>
-        <ToolGrid {...{tools}}/>
-        <PackUpload {...{setTool}}/>
+        <ToolGrid {...{tools, setCurrentTool}}/>
+        <PackUpload {...{tools, setTools}}/>
+        <div>
+            <PixelDisplay imageData={currentTool}/>
+        </div>
     </>
 }

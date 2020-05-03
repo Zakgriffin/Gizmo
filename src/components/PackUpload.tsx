@@ -1,17 +1,17 @@
 import React from 'react'
 import JSZip from 'jszip'
-import {materials, toolTypes} from '../constants'
-import { dataToImage } from '../PixelLogic'
-import { PixelImage } from '../PixelLogicInterfaces'
-import { Material, ToolType } from './ToolGrid'
+import {materials, toolTypes, Material, ToolType} from '../constants'
+import { dataToImage as base64ToImage } from '../PixelLogic'
+import { ToolGridData } from './ToolGrid'
 
 interface PackUploadProps {
-    setTool: (material: Material, type: ToolType, image: PixelImage) => void
+    tools: ToolGridData
+    setTools: (newTools: ToolGridData) => void
 }
 
 type UploadEvent = React.ChangeEvent<HTMLInputElement>
 
-export default function PackUpload({setTool}: PackUploadProps) {
+export default function PackUpload({tools, setTools}: PackUploadProps) {
     const handleFileUpload = async (e: UploadEvent) => {
         if(!e.target.files) return
         const file = e.target.files[0]
@@ -26,8 +26,11 @@ export default function PackUpload({setTool}: PackUploadProps) {
                 let textureFile = zip.files[`${itemPath}/${material}_${toolType}.png`]
                 if(!textureFile) continue
                 let fileData = await textureFile.async('base64')
-                let image = await dataToImage('data:image/png;base64,' + fileData)
-                setTool(material as Material, toolType as ToolType, image)
+                let image = await base64ToImage('data:image/png;base64,' + fileData)
+                
+                let newTools: ToolGridData = {...tools}
+                newTools[material as Material][toolType as ToolType] = image
+                setTools(newTools)
             }
         }
     }
@@ -36,8 +39,4 @@ export default function PackUpload({setTool}: PackUploadProps) {
         type='file'
         onChange={handleFileUpload}
     />
-}
-
-function loadZIP(e: UploadEvent) {
-
 }

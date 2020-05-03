@@ -1,9 +1,10 @@
 import React from 'react'
-import { Color } from '../PixelLogicInterfaces'
+import { Color, PixelImage } from '../PixelLogicInterfaces'
 
 interface Props {
-    imageData: Color[][]
-    style: object
+    imageData: PixelImage | undefined
+    style?: object
+    onClick?: () => void
 }
 
 interface PixelProps {
@@ -12,10 +13,10 @@ interface PixelProps {
     y: number
 }
 
-interface PixelRowProps {
-    pixelRow: Color[]
-    x: number
-}
+// interface PixelRowProps {
+//     pixelRow: ImageData
+//     x: number
+// }
 
 export default function PixelDisplay(props: Props) {
     const pixelSize = 32
@@ -34,24 +35,32 @@ export default function PixelDisplay(props: Props) {
             fill={colorToRGB(cell)}
         />
     }
-    
-    const PixelRow = ({pixelRow, x}: PixelRowProps) => {
-        return <> {
-            pixelRow.map((cell, y) =>
-                <Pixel key={y} {...{cell, x, y}}/>
-            )
-        } </>
-    }
 
-    return <svg viewBox='0 0 100 100' style={props.style}>
-        <rect fill='none' stroke='black' style={{width: '100%'}}/>
+    return <svg viewBox='0 0 100 100' style={props.style} onClick={props.onClick}>
+        <rect fill='none' stroke='black' style={{width: '100%', height: '100%'}}/>
         {
-            props.imageData.map((pixelRow, x) =>
-                <PixelRow key={x} {...{pixelRow, x}}/>
+            props.imageData?.map((pixelRow, x) => 
+                pixelRow.map((cell, y) =>
+                    <Pixel key={y} {...{cell, x, y}}/>
+                )
             )
         }
     </svg>
+
+    // return <table cellSpacing='0' cellPadding='0' style={{position: 'absolute', width: '100%', height: '100%'}}>
+    //     <tbody>
+    //     {props.imageData.map((pixelRow, x) =>
+    //         <tr key={x}>
+    //         {pixelRow.map((cell, y) =>
+    //             <td key={y} style={{background: 'red', height: '10%', width: '10%'}}>
+    //             </td>
+    //         )}
+    //         </tr>
+    //     )}
+    //     </tbody>
+    // </table>
 }
+
 
 function colorToRGB(color: Color) {
     const {red, green, blue, alpha} = color
