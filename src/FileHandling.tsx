@@ -1,3 +1,4 @@
+import React from 'react'
 import JSZip from 'jszip'
 
 // export default class FileStructure {
@@ -9,7 +10,6 @@ export function downloadFolder() {
     let photoZip = zip.folder('photos/ok')
     photoZip.file('README.txt', 'a folder with photos')
     let thing = zip.folder('thing')
-    let thing2 = thing.file('')
     thing.file('uh.txt', 'ok then')
 
     zip.generateAsync({type: 'uint8array'}).then(thing => {
@@ -19,4 +19,11 @@ export function downloadFolder() {
         link.download = fileName + '.zip'
         link.click()
     })
+}
+
+export default function FileTesting() {
+    return <input
+        type='file'
+        onChange={downloadFolder}
+    />
 }

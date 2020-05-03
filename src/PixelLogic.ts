@@ -209,3 +209,81 @@ function forInBounds(minX: number, maxX: number, minY: number, maxY: number, cal
 function withinRange(x: number, y: number) {
     return x >= 0 && x < 32 && y >= 0 && y < 32
 }
+
+export type PixelImage = Color[][]
+
+export function blankPixelImage() {
+    let image: PixelImage = [...Array(32)].map(() => Array<Color>(32))
+    forInSquareBounds(0, 32 - 1, (x, y) => {
+        image[x][y] = blankPixel()
+    })
+    return image
+}
+
+export function blankPixel() {
+    return {red: 0, green: 0, blue: 0, alpha: 0} as Color
+}
+
+export function canvasImageDataToRGBA(imageData: ImageData) {
+    let dataRGBA = [...Array(32)].map(() => Array<Color>(32))
+
+    let data = imageData.data
+    for(let y = 0; y < 32; y++) {
+        for(let x = 0; x < 32; x++) {
+            let yi = y * 4
+            let xi = x * 4
+            let current = yi * 32 + xi
+            dataRGBA[x][32 - y - 1] = {
+                red: data[current],
+                green: data[current + 1],
+                blue: data[current + 2],
+                alpha: data[current + 3]
+            }
+        }
+    }
+    return dataRGBA
+}
+
+export function dataToImage(fileData: string) {
+    return new Promise((resolve: (image: Color[][]) => void, reject) => {
+        let canvas = document.createElement('canvas')
+        canvas.width = 32
+        canvas.height = 32
+        let ctx = canvas.getContext('2d')
+    
+        let img = new Image()
+
+        img.onload = () => {
+            if(!ctx) return
+            ctx.drawImage(img, 0, 0)
+            let data = ctx.getImageData(0, 0, 32, 32)
+            URL.revokeObjectURL(img.src)
+            let image = canvasImageDataToRGBA(data)
+            resolve(image)
+        }
+        img.onerror = () => { 
+            reject('it broke')
+        }
+        img.src = fileData
+    })
+}
+
+export function b64toBlob(b64Data: string, contentType='', sliceSize=512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+  
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  }

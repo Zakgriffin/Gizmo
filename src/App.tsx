@@ -4,7 +4,9 @@ import ImageUploader from './components/ImageUploader'
 import DownloadModel from './components/DownloadModel'
 import { getEdges, toDrawEdge } from './PixelLogic'
 import { Color, EdgesPair } from './PixelLogicInterfaces'
-import { downloadFolder } from './FileHandling'
+import FileTesting, { downloadFolder } from './FileHandling'
+import ToolGrid from './components/ToolGrid'
+import PackUpload from './components/PackUpload'
 
 let initData = [...Array(32)].map(() => Array<Color>(32))
 function f(x: number, y: number) {
@@ -58,11 +60,14 @@ export default function App() {
     }
 
     return <>
-        <PixelEditor setImageData={setImageData} imageData={imageData} toggleDepth={toggleDepth} edgesPair={edgesPair}/>
+        {/* <PixelEditor setImageData={setImageData} imageData={imageData} toggleDepth={toggleDepth} edgesPair={edgesPair}/>
         <ImageUploader setImageData={setImageData}/>
         <DownloadModel imageData={imageData} edgesPair={edgesPair}/>
         <button
             onClick={downloadFolder}
-        >UH</button>
+        >UH</button> */}
+        {/* <ToolGrid/> */}
+        {/* <FileTesting/> */}
+        <PackUpload/>
     </>
 }
