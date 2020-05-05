@@ -242,7 +242,7 @@ export function canvasImageDataToRGBA(imageData: ImageData) {
     return dataRGBA
 }
 
-export function dataToImage(fileData: string) {
+export function base64ToImage(fileData: string) {
     return new Promise((resolve: (image: PixelImage) => void, reject) => {
         let canvas = document.createElement('canvas')
         canvas.width = 32

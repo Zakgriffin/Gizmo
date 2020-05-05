@@ -44,7 +44,7 @@ export default function ToolGrid({tools, setCurrentTool}: ToolGridProps) {
 
 interface ToolSpace {
     imageData: PixelImage | undefined
-    onClick: () => void
+    onClick?: () => void
 }
 
 function ToolSpace({imageData, onClick}: ToolSpace) {

@@ -8,13 +8,14 @@ import ErodeViewer from './components/ErodeViewer'
 export default function App() {
     const [tools, setTools] = useState<ToolGridData>(initTools)
     const [currentTool, setCurrentTool] = useState<PixelImage>()
-    
+
     return <>
         <ToolGrid {...{tools, setCurrentTool}}/>
         <PackUpload {...{tools, setTools}}/>
         <div>
             <PixelDisplay imageData={currentTool} style={{width: 400}}/>
         </div>
+        
         <ErodeViewer currentImage={currentTool}/>
     </>
 }

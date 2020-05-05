@@ -12,7 +12,7 @@ export default function ErodeViewer({currentImage}: ErodeViewerProps) {
 
     useEffect(() => {
         setErodeStages(Array(erodeStages.length).fill(currentImage))
-    }, [currentImage])
+    }, [currentImage, erodeStages.length])
 
     const addErodeStage = () => {
         setErodeStages([...erodeStages, undefined])

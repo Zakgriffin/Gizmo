@@ -1,6 +1,6 @@
 import React from 'react'
 import { Color } from '../PixelLogicInterfaces'
-import { canvasImageDataToRGBA, dataToImage } from '../PixelLogic'
+import { canvasImageDataToRGBA, base64ToImage } from '../PixelLogic'
 
 interface Props {
     setImageData: (newImageData: Color[][]) => void
@@ -27,7 +27,7 @@ export default function ImageUploader(props: Props) {
         // }
         // img.src = URL.createObjectURL(file)
 
-        dataToImage(URL.createObjectURL(file)).then(props.setImageData)
+        base64ToImage(URL.createObjectURL(file)).then(props.setImageData)
     }
 
     return <>

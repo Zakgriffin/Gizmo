@@ -1,7 +1,7 @@
 import React from 'react'
 import JSZip from 'jszip'
 import {materials, toolTypes, Material, ToolType} from '../constants'
-import { dataToImage as base64ToImage } from '../PixelLogic'
+import { base64ToImage, } from '../PixelLogic'
 import { ToolGridData } from './ToolGrid'
 
 interface PackUploadProps {
@@ -21,6 +21,7 @@ export default function PackUpload({tools, setTools}: PackUploadProps) {
 
         const itemPath = `${fileName}/assets/minecraft/textures/items`
 
+        let newTools: ToolGridData = {...tools}
         for(let material of materials) {
             for(let toolType of toolTypes) {
                 let textureFile = zip.files[`${itemPath}/${material}_${toolType}.png`]
@@ -28,11 +29,10 @@ export default function PackUpload({tools, setTools}: PackUploadProps) {
                 let fileData = await textureFile.async('base64')
                 let image = await base64ToImage('data:image/png;base64,' + fileData)
                 
-                let newTools: ToolGridData = {...tools}
                 newTools[material as Material][toolType as ToolType] = image
-                setTools(newTools)
             }
         }
+        setTools(newTools)
     }
 
     return <input
