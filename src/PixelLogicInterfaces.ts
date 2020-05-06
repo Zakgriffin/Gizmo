@@ -1,9 +1,10 @@
+import { Material, ToolType } from './constants'
+
 export interface Color {
     red: number
     green: number
     blue: number
     alpha: number
-    depth?: boolean
 }
 
 export interface Point {
@@ -35,4 +36,33 @@ export interface EdgesPair {
     toDraw: DrawEdge[]
 }
 
+export type MaybeSyncedColor = Color | SyncedColor
+export type SomeSyncedPixelImage = MaybeSyncedColor[][]
+
 export type PixelImage = Color[][]
+
+export type ToolGridData = {
+    [material in Material]: {
+        [toolType in ToolType]: ToolData
+    }
+}
+
+type DepthMap = number[][]
+
+export interface Texture {
+    pixelImage: SomeSyncedPixelImage
+    depthMap?: DepthMap
+} 
+
+export type MaterialPalettes = {
+    [material in Material]: MaterialPalette
+}
+
+type SyncedColor = number
+
+export interface ToolData {
+    texture: Texture
+    materialPalette: MaterialPalette
+}
+
+export type MaterialPalette = Color[]

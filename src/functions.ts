@@ -5,3 +5,11 @@ export function toPolyLine(points: number[][]) {
     }
     return res
 }
+
+export function arrayToObjectKeys(array: any[], value: any) {
+    let result: any = {}
+    for(let key of array) {
+        result[key] = typeof value === 'function' ? value(key) : value
+    }
+    return result
+}

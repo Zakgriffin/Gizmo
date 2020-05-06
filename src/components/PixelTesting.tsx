@@ -53,7 +53,7 @@ export default function PixelTesting() {
 
     const toggleDepth = (x: number, y: number) => {
         let clone = getImageDataCopy()
-        clone[x][y].depth = !clone[x][y].depth
+        // clone[x][y].depth = !clone[x][y].depth
         setImageData(clone)
     }
 

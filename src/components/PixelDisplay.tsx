@@ -1,8 +1,12 @@
 import React, { useRef, useEffect } from 'react'
 import { PixelImage, Color } from '../PixelLogicInterfaces'
 
-export default function PixelDisplay2({imageData, style}: {imageData: PixelImage | undefined, style: object}) {
+interface PixelDisplayProps {
+    imageData?: PixelImage
+    style?: object
+}
 
+export default function PixelDisplay({imageData, style}: PixelDisplayProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {

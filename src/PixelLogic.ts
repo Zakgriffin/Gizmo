@@ -1,4 +1,4 @@
-import { Facing, Point, Color, Edge, DrawEdge, PixelImage } from "./PixelLogicInterfaces"
+import { Facing, Point, Color, Edge, DrawEdge, PixelImage, MaybeSyncedColor } from "./PixelLogicInterfaces"
 
 export function getEdges(data: PixelImage) {
     let startIndex = findStartIndex(data)
@@ -264,4 +264,8 @@ export function base64ToImage(fileData: string) {
         }
         img.src = fileData
     })
+}
+
+export function isSyncedColor(color: any): color is MaybeSyncedColor {
+    return typeof color === 'number'
 }

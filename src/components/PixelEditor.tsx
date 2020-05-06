@@ -19,7 +19,7 @@ export default function PixelEditor(props: Props) {
     const cellSizeNoSeams = cellSize * 1.04
 
     const Pixel = ({cell, x, y}: {cell: Color, x: number, y: number}) => {
-        const depth = cell.depth ? 1 : 0
+        const depth = 0//cell.depth ? 1 : 0
 
         const xPos = x * cellSize
         const yPos = (100 - y * cellSize) - cellSize

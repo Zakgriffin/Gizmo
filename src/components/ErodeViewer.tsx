@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { PixelImage } from '../PixelLogicInterfaces'
-import PixelDisplay from './PixelDisplay'
+import PixelDisplay from './PixelDisplayOld'
 import { erode } from '../PixelLogic'
 
 interface ErodeViewerProps {
@@ -8,41 +8,41 @@ interface ErodeViewerProps {
 }
 
 export default function ErodeViewer({currentImage}: ErodeViewerProps) {
-    const [erodeStages, setErodeStages] = useState<(PixelImage | undefined)[]>([undefined])
+    // const [erodeStages, setErodeStages] = useState<(PixelImage | undefined)[]>([undefined])
 
-    useEffect(() => {
-        setErodeStages(Array(erodeStages.length).fill(currentImage))
-    }, [currentImage, erodeStages.length])
+    // useEffect(() => {
+    //     setErodeStages(Array(erodeStages.length).fill(currentImage))
+    // }, [currentImage, erodeStages.length])
 
-    const addErodeStage = () => {
-        setErodeStages([...erodeStages, undefined])
-    }
-    const removeErodeStage = () => {
-        setErodeStages(erodeStages.slice(1))
-    }
-    const erodeAll = () => {
-        let first = erodeStages[0]
-        if(!first) return
-        let newEroded = [first]
+    // const addErodeStage = () => {
+    //     setErodeStages([...erodeStages, undefined])
+    // }
+    // const removeErodeStage = () => {
+    //     setErodeStages(erodeStages.slice(1))
+    // }
+    // const erodeAll = () => {
+    //     let first = erodeStages[0]
+    //     if(!first) return
+    //     let newEroded = [first]
 
-        for(let i = 1; i <= erodeStages.length; i++) {
-            let toErode = newEroded[i - 1]
-            if(!toErode) break
-            let eroded = erode(toErode, {
-                areaOfInfluence: 3,
-                percentToRemain: 1,
-                //carryEdgeColor: true,
-                randomSurviveChance: 0.9,
-                circular: true
-            })
-            newEroded[i] = eroded
-        }
-        console.log(newEroded)
-        setErodeStages(newEroded)
-    }
+    //     for(let i = 1; i <= erodeStages.length; i++) {
+    //         let toErode = newEroded[i - 1]
+    //         if(!toErode) break
+    //         let eroded = erode(toErode, {
+    //             areaOfInfluence: 3,
+    //             percentToRemain: 1,
+    //             //carryEdgeColor: true,
+    //             randomSurviveChance: 0.9,
+    //             circular: true
+    //         })
+    //         newEroded[i] = eroded
+    //     }
+    //     console.log(newEroded)
+    //     setErodeStages(newEroded)
+    // }
 
     return <>
-        {
+        {/* {
             erodeStages?.map((erodeStage, i) => 
                 <PixelDisplay key={i} imageData={erodeStage} style={{border: 'red 1px solid', width: 150}}/>
             )
@@ -55,6 +55,6 @@ export default function ErodeViewer({currentImage}: ErodeViewerProps) {
         >Remove Erode Stage</button>
         <button
             onClick={erodeAll}
-        >Erode ALL</button>
+        >Erode ALL</button> */}
     </>
 }

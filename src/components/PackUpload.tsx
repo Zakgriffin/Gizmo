@@ -1,8 +1,9 @@
 import React from 'react'
+import { ToolGridData } from '../PixelLogicInterfaces'
 import JSZip from 'jszip'
-import {materials, toolTypes, Material, ToolType} from '../constants'
-import { base64ToImage, } from '../PixelLogic'
-import { ToolGridData } from './ToolGrid'
+import { materials, toolTypes } from '../constants'
+import { base64ToImage } from '../PixelLogic'
+
 
 interface PackUploadProps {
     tools: ToolGridData
@@ -29,7 +30,7 @@ export default function PackUpload({tools, setTools}: PackUploadProps) {
                 let fileData = await textureFile.async('base64')
                 let image = await base64ToImage('data:image/png;base64,' + fileData)
                 
-                newTools[material as Material][toolType as ToolType] = image
+                newTools[material][toolType].texture.pixelImage = image
             }
         }
         setTools(newTools)
