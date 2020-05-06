@@ -1,66 +1,36 @@
-import React from 'react'
-import { Color, PixelImage } from '../PixelLogicInterfaces'
+import React, { useRef, useEffect } from 'react'
+import { PixelImage, Color } from '../PixelLogicInterfaces'
 
-interface Props {
-    imageData: PixelImage | undefined
-    style?: object
-    onClick?: () => void
-}
+export default function PixelDisplay2({imageData, style}: {imageData: PixelImage | undefined, style: object}) {
 
-interface PixelProps {
-    cell: Color
-    x: number
-    y: number
-}
+    const canvasRef = useRef<HTMLCanvasElement>(null)
 
-// interface PixelRowProps {
-//     pixelRow: ImageData
-//     x: number
-// }
+    useEffect(() => {
+        const canvas = canvasRef.current
+        if(!canvas) return
+        canvas.width = 32 * 5
+        canvas.height = 32 * 5
+    }, [])
 
-export default function PixelDisplay(props: Props) {
-    const pixelSize = 32
-    
-    const cellSize = 100 / pixelSize
-    const cellSizeNoSeams = cellSize * 1.04
+    useEffect(() => {
+        const canvas = canvasRef.current
+        if(!canvas) return
+        const ctx = canvas.getContext('2d')
+        if(!ctx || !imageData) return
 
-    const Pixel = ({cell, x, y}: PixelProps) => {
-        const depth = cell.depth ? 1 : 0
-
-        const xPos = x * cellSize
-        const yPos = (100 - y * cellSize) - cellSize
-        
-        return <rect x={xPos + depth} y={yPos + depth}
-            width={cellSizeNoSeams} height={cellSizeNoSeams}
-            fill={colorToRGB(cell)}
-        />
-    }
-
-    return <svg viewBox='0 0 100 100' style={props.style} onClick={props.onClick}>
-        <rect fill='none' stroke='black' style={{width: '100%', height: '100%'}}/>
-        {
-            props.imageData?.map((pixelRow, x) => 
-                pixelRow.map((cell, y) =>
-                    <Pixel key={y} {...{cell, x, y}}/>
-                )
-            )
+        const pixelSize = canvas.width / 32
+        for(let x = 0; x < imageData.length; x++) {
+            for(let y = 0; y < imageData.length; y++) {
+                ctx.fillStyle = colorToRGB(imageData[x][y])
+                ctx.fillRect(x * pixelSize, (32 - y - 1) * pixelSize, pixelSize, pixelSize)
+            }
         }
-    </svg>
+    }, [imageData])
 
-    // return <table cellSpacing='0' cellPadding='0' style={{position: 'absolute', width: '100%', height: '100%'}}>
-    //     <tbody>
-    //     {props.imageData.map((pixelRow, x) =>
-    //         <tr key={x}>
-    //         {pixelRow.map((cell, y) =>
-    //             <td key={y} style={{background: 'red', height: '10%', width: '10%'}}>
-    //             </td>
-    //         )}
-    //         </tr>
-    //     )}
-    //     </tbody>
-    // </table>
+    return <>
+        <canvas ref={canvasRef} style={{...style, outline: '1px gray solid'}}/>
+    </>
 }
-
 
 function colorToRGB(color: Color) {
     const {red, green, blue, alpha} = color

@@ -19,3 +19,18 @@ export default function App() {
         <ErodeViewer currentImage={currentTool}/>
     </>
 }
+
+/*
+
+App
+    ToolGrid
+    TextureEditor
+        WorkingTexture
+            PixelDisplay
+        MaterialPalette
+            Swatch[]
+        ErodeStages
+            ErodeStage[]
+                PixelDisplay
+        Swatch
+*/
