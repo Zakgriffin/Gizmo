@@ -1,3 +1,5 @@
+import { useRef, useEffect } from 'react'
+
 export function toPolyLine(points: number[][]) {
     let res = ''
     for(let point of points) {
@@ -12,4 +14,12 @@ export function arrayToObjectKeys(array: any[], value: any) {
         result[key] = typeof value === 'function' ? value(key) : value
     }
     return result
+}
+
+export function usePrevious<T>(value: T) {
+    const ref = useRef<T>();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
 }

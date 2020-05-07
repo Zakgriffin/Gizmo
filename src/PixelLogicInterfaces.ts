@@ -58,7 +58,7 @@ export type MaterialPalettes = {
     [material in Material]: MaterialPalette
 }
 
-type SyncedColor = number
+export type SyncedColor = number
 
 export interface ToolData {
     texture: Texture

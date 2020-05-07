@@ -10,7 +10,6 @@ import { materials, Material, toolTypes } from './constants'
 export type EventListeners = {[eventName: string]: (event?: React.MouseEvent) => void}
 
 const initMaterialPalettes: MaterialPalettes = arrayToObjectKeys(materials, [])
-console.log(initMaterialPalettes)
 
 const blankTool = (material: Material) => ({
     texture: {
@@ -20,13 +19,13 @@ const blankTool = (material: Material) => ({
 })
 
 const initGridData: ToolGridData = arrayToObjectKeys(materials, (material: Material) => 
-    arrayToObjectKeys(toolTypes, blankTool(material))
+    arrayToObjectKeys(toolTypes, () => blankTool(material))
 )
 
 export default function App() {
     const [tools, setTools] = useState(initGridData)
     // const [materialPalettes, setMaterialPalettes] = useState(initMaterialPalettes)
-    const [currentTool, setCurrentTool] = useState<ToolData>()
+    const [currentTool, setCurrentTool] = useState<ToolData>(blankTool('diamond'))
     // const [sharedTextures, setSharedTextures] = useState<Texture[]>()
 
     return <>
