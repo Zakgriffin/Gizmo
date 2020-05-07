@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { PixelImage } from '../PixelLogicInterfaces'
-import PixelDisplay from './unused/PixelDisplayOld'
-import { erode } from '../PixelLogic'
+import React from 'react'
+import { PixelImage } from './PixelLogicInterfaces'
 
 interface ErodeViewerProps {
     currentImage: PixelImage | undefined

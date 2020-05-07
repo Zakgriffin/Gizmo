@@ -6,6 +6,7 @@ import PackUpload from './components/PackUpload'
 import { arrayToObjectKeys } from './functions'
 import { blankPixelImage } from './PixelLogic'
 import { materials, Material, toolTypes } from './constants'
+import MaterialSwatches from './components/MaterialSwatches'
 
 export type EventListeners = {[eventName: string]: (event?: React.MouseEvent) => void}
 
@@ -28,16 +29,19 @@ export default function App() {
     const [currentTool, setCurrentTool] = useState<ToolData>(blankTool('diamond'))
     // const [sharedTextures, setSharedTextures] = useState<Texture[]>()
 
+    const [choosingNew, setChoosingNew] = useState(false)
+    console.log(choosingNew)
+
     return <div>
         <div style={{display: 'inline-block'}}>
             <ToolGrid {...{tools, setCurrentTool}}/>
             <PackUpload {...{tools, setTools}}/>
         </div>
         <div style={{display: 'inline-block'}}>
-            <ToolDisplay toolData={currentTool} style={{width: 300}} resolutionScale={25}/>
+            <ToolDisplay toolData={currentTool} style={{width: 300}} resolutionScale={25} {...{choosingNew}}/>
+            <MaterialSwatches palette={currentTool.materialPalette} {...{choosingNew, setChoosingNew}}/>
         </div>
         
-        {/* <ErodeViewer currentImage={currentTool}/> */}
     </div>
 }
 

@@ -269,3 +269,8 @@ export function base64ToImage(fileData: string) {
 export function isSyncedColor(color: any): color is MaybeSyncedColor {
     return typeof color === 'number'
 }
+
+export function colorToRGB(color: Color) {
+    const {red, green, blue, alpha} = color
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+}

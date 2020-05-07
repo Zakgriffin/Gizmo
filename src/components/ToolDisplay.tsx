@@ -6,6 +6,7 @@ import { isSyncedColor } from '../PixelLogic'
 
 interface ToolDisplayProps {
     toolData: ToolData
+    choosingNew: boolean
     listeners?: EventListeners
     resolutionScale?: number
     style?: object
@@ -29,6 +30,8 @@ export default function ToolDisplay({toolData, listeners, resolutionScale, style
         }
 
         setImageData(newImageData)
+        // TODO fix this
+        // eslint-disable-next-line
     }, [toolData])
 
     return <PixelDisplay {...{imageData, style}} listeners={listeners} resolutionScale={resolutionScale}/>

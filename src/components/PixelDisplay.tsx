@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
-import { PixelImage, Color } from '../PixelLogicInterfaces'
+import { PixelImage } from '../PixelLogicInterfaces'
 import { EventListeners } from '../App'
+import { colorToRGB } from '../PixelLogic'
 
 interface PixelDisplayProps {
     imageData?: PixelImage
@@ -18,7 +19,7 @@ export default function PixelDisplay({imageData, resolutionScale, listeners, sty
         if(!canvas) return
         canvas.width = 32 * resScale
         canvas.height = 32 * resScale
-    }, [])
+    }, [resScale])
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -48,9 +49,4 @@ export default function PixelDisplay({imageData, resolutionScale, listeners, sty
             // }}
         />
     </>
-}
-
-function colorToRGB(color: Color) {
-    const {red, green, blue, alpha} = color
-    return `rgba(${red}, ${green}, ${blue}, ${alpha})`
 }
