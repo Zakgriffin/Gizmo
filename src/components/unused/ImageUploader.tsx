@@ -1,6 +1,6 @@
 import React from 'react'
-import { Color } from '../PixelLogicInterfaces'
-import { base64ToImage } from '../PixelLogic'
+import { Color } from '../../PixelLogicInterfaces'
+import { base64ToImage } from '../../PixelLogic'
 
 interface Props {
     setImageData: (newImageData: Color[][]) => void

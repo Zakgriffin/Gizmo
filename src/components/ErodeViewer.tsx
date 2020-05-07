@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { PixelImage } from '../PixelLogicInterfaces'
-import PixelDisplay from './PixelDisplayOld'
+import PixelDisplay from './unused/PixelDisplayOld'
 import { erode } from '../PixelLogic'
 
 interface ErodeViewerProps {

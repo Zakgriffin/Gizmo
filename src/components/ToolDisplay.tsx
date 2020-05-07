@@ -7,10 +7,11 @@ import { isSyncedColor } from '../PixelLogic'
 interface ToolDisplayProps {
     toolData: ToolData
     listeners?: EventListeners
+    resolutionScale?: number
     style?: object
 }
 
-export default function ToolDisplay({toolData, listeners, style}: ToolDisplayProps) {
+export default function ToolDisplay({toolData, listeners, resolutionScale, style}: ToolDisplayProps) {
     const [imageData, setImageData] = useState(toolData.texture.pixelImage as PixelImage)
 
     useEffect(() => {
@@ -30,5 +31,5 @@ export default function ToolDisplay({toolData, listeners, style}: ToolDisplayPro
         setImageData(newImageData)
     }, [toolData])
 
-    return <PixelDisplay {...{imageData, style, ...listeners}}/>
+    return <PixelDisplay {...{imageData, style}} listeners={listeners} resolutionScale={resolutionScale}/>
 }

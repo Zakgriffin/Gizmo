@@ -1,7 +1,7 @@
 import React from 'react'
-import { toPolyLine } from '../functions'
-import { Color, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
-import { erode } from '../PixelLogic'
+import { toPolyLine } from '../../functions'
+import { Color, DrawEdge, EdgesPair } from '../../PixelLogicInterfaces'
+import { erode } from '../../PixelLogic'
 
 interface Props {
     imageData: Color[][]

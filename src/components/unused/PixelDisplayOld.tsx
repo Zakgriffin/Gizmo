@@ -1,5 +1,5 @@
 import React from 'react'
-import { Color, PixelImage } from '../PixelLogicInterfaces'
+import { Color, PixelImage } from '../../PixelLogicInterfaces'
 
 interface Props {
     imageData: PixelImage

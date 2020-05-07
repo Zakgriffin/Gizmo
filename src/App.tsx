@@ -28,15 +28,17 @@ export default function App() {
     const [currentTool, setCurrentTool] = useState<ToolData>(blankTool('diamond'))
     // const [sharedTextures, setSharedTextures] = useState<Texture[]>()
 
-    return <>
-        <ToolGrid {...{tools, setCurrentTool}}/>
-        <PackUpload {...{tools, setTools}}/>
-        <div>
-            <ToolDisplay toolData={currentTool} style={{width: 400}}/>
+    return <div>
+        <div style={{display: 'inline-block'}}>
+            <ToolGrid {...{tools, setCurrentTool}}/>
+            <PackUpload {...{tools, setTools}}/>
+        </div>
+        <div style={{display: 'inline-block'}}>
+            <ToolDisplay toolData={currentTool} style={{width: 300}} resolutionScale={25}/>
         </div>
         
         {/* <ErodeViewer currentImage={currentTool}/> */}
-    </>
+    </div>
 }
 
 /*
@@ -46,7 +48,7 @@ App
     TextureEditor
         WorkingTexture
             PixelDisplay
-        MaterialPalette
+        MaterialSwatches
             Swatch[]
         ErodeStages
             ErodeStage[]

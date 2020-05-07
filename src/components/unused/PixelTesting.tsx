@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import PixelEditor from '../components/PixelEditor'
-import ImageUploader from '../components/ImageUploader'
-import DownloadModel from '../components/DownloadModel'
-import { getEdges, toDrawEdge } from '../PixelLogic'
-import { Color, EdgesPair } from '../PixelLogicInterfaces'
-import { downloadFolder } from '../FileHandling'
+import PixelEditor from './PixelEditor'
+import ImageUploader from './ImageUploader'
+import DownloadModel from './DownloadModel'
+import { getEdges, toDrawEdge } from '../../PixelLogic'
+import { Color, EdgesPair } from '../../PixelLogicInterfaces'
+import { downloadFolder } from '../../FileHandling'
 
 let initData = [...Array(32)].map(() => Array<Color>(32))
 function f(x: number, y: number) {

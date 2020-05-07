@@ -20,13 +20,14 @@ export default function PackUpload({tools, setTools}: PackUploadProps) {
     
         let zip = await JSZip.loadAsync(file)
 
-        const itemPath = `${fileName}/assets/minecraft/textures/items`
+        const itemPath = `${fileName}/assets/minecraft/textures/item`
 
         let newTools: ToolGridData = {...tools}
         
         for(let material of materials) {
             for(let toolType of toolTypes) {
-                let textureFile = zip.files[`${itemPath}/${material}_${toolType}.png`]
+                let textureFile = zip.files[`${itemPath}s/${material}_${toolType}.png`]
+                textureFile = textureFile ?? zip.files[`${itemPath}/${material}_${toolType}.png`]
                 if(!textureFile) continue
                 let fileData = await textureFile.async('base64')
                 let image = await base64ToImage('data:image/png;base64,' + fileData)

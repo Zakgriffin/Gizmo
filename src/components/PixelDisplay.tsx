@@ -1,19 +1,23 @@
 import React, { useRef, useEffect } from 'react'
 import { PixelImage, Color } from '../PixelLogicInterfaces'
+import { EventListeners } from '../App'
 
 interface PixelDisplayProps {
     imageData?: PixelImage
+    resolutionScale?: number
+    listeners?: EventListeners
     style?: object
 }
 
-export default function PixelDisplay({imageData, style}: PixelDisplayProps) {
+export default function PixelDisplay({imageData, resolutionScale, listeners, style}: PixelDisplayProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const resScale = resolutionScale ?? 5
 
     useEffect(() => {
         const canvas = canvasRef.current
         if(!canvas) return
-        canvas.width = 32 * 5
-        canvas.height = 32 * 5
+        canvas.width = 32 * resScale
+        canvas.height = 32 * resScale
     }, [])
 
     useEffect(() => {
@@ -21,6 +25,9 @@ export default function PixelDisplay({imageData, style}: PixelDisplayProps) {
         if(!canvas) return
         const ctx = canvas.getContext('2d')
         if(!ctx || !imageData) return
+
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
 
         const pixelSize = canvas.width / 32
         for(let x = 0; x < imageData.length; x++) {
@@ -32,7 +39,14 @@ export default function PixelDisplay({imageData, style}: PixelDisplayProps) {
     }, [imageData])
 
     return <>
-        <canvas ref={canvasRef} style={{...style, outline: '1px gray solid'}}/>
+        <canvas ref={canvasRef} {...listeners} style={{...style, outline: '1px gray solid'}}
+            // onMouseMove={e => {
+            //     let box = canvasRef.current?.getBoundingClientRect()
+            //     if(!box) return
+            //     let a = Math.floor(mapNumber(e.clientX, box.left, box.right, 0, 32))
+            //     console.log(a)
+            // }}
+        />
     </>
 }
 

@@ -15,7 +15,10 @@ export default function ToolGrid({tools, setCurrentTool}: ToolGridProps) {
             <tr key={r}>
             {Object.values(toolMaterialRow).map((tool, c) =>
                 <td key={c} style={{padding: 8}}>
-                    <ToolDisplay toolData={tool} listeners={{onClick: () => setCurrentTool(tool)}}/>
+                    <ToolDisplay style={{width: 60}} toolData={tool} listeners={{onClick: () => {
+                        setCurrentTool(tool)
+                    }}}
+                    />
                 </td>
             )}
             </tr>

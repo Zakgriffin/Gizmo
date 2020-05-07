@@ -1,6 +1,6 @@
 import React from 'react'
-import { Color, Facing, DrawEdge, EdgesPair } from '../PixelLogicInterfaces'
-import { getTrimmedData, toDrawEdge, getEdges, forInSquareBounds } from '../PixelLogic'
+import { Color, Facing, DrawEdge, EdgesPair } from '../../PixelLogicInterfaces'
+import { getTrimmedData, toDrawEdge, getEdges, forInSquareBounds } from '../../PixelLogic'
 
 interface Props {
     imageData: Color[][]
